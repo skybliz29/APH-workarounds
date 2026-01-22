@@ -1,12 +1,18 @@
-name: Build EXE
-on: [push]
+name: Build and Release EXE
+
+on:
+  push:
+    tags:
+      - 'v*' # Triggers when you create a tag like v1.0, v1.1, etc.
+  workflow_dispatch: # Allows you to run this manually from the Actions tab
+
 jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4 # Updated to v4
+      - uses: actions/checkout@v4
       
-      - uses: actions/setup-python@v5 # Updated to v5
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.9'
           
@@ -18,8 +24,9 @@ jobs:
       - name: Create EXE
         run: pyinstaller --noconsole --onefile main.py
         
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4 # This is the critical fix
+      - name: Create Release and Upload EXE
+        uses: softprops/action-gh-release@v1
         with:
-          name: Windows-EXE-File
-          path: dist/main.exe
+          files: dist/main.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
