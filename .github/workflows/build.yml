@@ -3,8 +3,11 @@ name: Build and Release EXE
 on:
   push:
     tags:
-      - 'v*' # Triggers when you create a tag like v1.0, v1.1, etc.
-  workflow_dispatch: # Allows you to run this manually from the Actions tab
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write  # This is the fix for "Requires authentication"
 
 jobs:
   build:
